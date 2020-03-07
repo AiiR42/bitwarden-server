@@ -52,6 +52,8 @@ chown -R $USERNAME:$GROUPNAME /var/opt/mssql
 chown $USERNAME:$GROUPNAME /backup-db.sh
 chown $USERNAME:$GROUPNAME /backup-db.sql
 
+export LD_PRELOAD=/wrapper.so
+
 # Sounds like gosu keeps env when switching, but of course cron does not
 env > /etc/environment
 cron

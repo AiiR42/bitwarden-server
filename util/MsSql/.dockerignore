@@ -3,3 +3,4 @@
 !backup-db.sh
 !backup-db.sql
 !crontab
+!wrapper.c

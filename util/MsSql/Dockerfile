@@ -1,3 +1,12 @@
+FROM debian:stretch-slim AS build0
+WORKDIR /root
+
+RUN apt-get update && apt-get install -y binutils gcc
+
+ADD wrapper.c /root/
+RUN gcc -shared  -ldl -fPIC -o wrapper.so wrapper.c
+
+
 FROM mcr.microsoft.com/mssql/server:2017-CU14
 
 LABEL com.bitwarden.product="bitwarden"
@@ -24,5 +33,7 @@ RUN echo 127.0.0.1 vortex.data.microsoft.com >> /etc/hosts
 
 HEALTHCHECK --timeout=3s CMD /opt/mssql-tools/bin/sqlcmd \
     -S localhost -U sa -P ${SA_PASSWORD} -Q "SELECT 1" || exit 1
+
+COPY --from=build0 /root/wrapper.so /
 
 ENTRYPOINT ["/entrypoint.sh"]
